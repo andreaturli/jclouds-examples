@@ -26,10 +26,6 @@ import java.util.Set;
 import org.jclouds.ContextBuilder;
 import org.jclouds.apis.ApiMetadata;
 import org.jclouds.apis.Apis;
-import org.jclouds.atmos.AtmosAsyncClient;
-import org.jclouds.atmos.AtmosClient;
-import org.jclouds.azureblob.AzureBlobAsyncClient;
-import org.jclouds.azureblob.AzureBlobClient;
 import org.jclouds.blobstore.BlobStore;
 import org.jclouds.blobstore.BlobStoreContext;
 import org.jclouds.blobstore.domain.Blob;
@@ -39,15 +35,12 @@ import org.jclouds.openstack.swift.SwiftClient;
 import org.jclouds.providers.ProviderMetadata;
 import org.jclouds.providers.Providers;
 import org.jclouds.rest.RestContext;
-import org.jclouds.s3.S3AsyncClient;
-import org.jclouds.s3.S3Client;
 
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 import com.google.common.io.ByteSource;
-import com.google.inject.Module;
 
 /**
  * Demonstrates the use of {@link BlobStore}.
@@ -85,57 +78,45 @@ public class MainApp {
       String identity = args[1];
       String credential = args[2];
       String containerName = args[3];
-
+      String endpoint = args[4];
       // Init
       BlobStoreContext context = ContextBuilder.newBuilder(provider)
                                                .credentials(identity, credential)
+                                               .endpoint(endpoint)
                                                .buildView(BlobStoreContext.class);
-
+      BlobStore blobStore = null;
       try {
-
          // Create Container
-         BlobStore blobStore = context.getBlobStore();
+         blobStore = context.getBlobStore();
          blobStore.createContainerInLocation(null, containerName);
          String blobName = "test";
          ByteSource payload = ByteSource.wrap("testdata".getBytes(Charsets.UTF_8));
-
          // List Container Metadata
          for (StorageMetadata resourceMd : blobStore.list()) {
             if (containerName.equals(resourceMd.getName())) {
                System.out.println(resourceMd);
             }
          }
-
          // Add Blob
          Blob blob = blobStore.blobBuilder(blobName)
             .payload(payload)
             .contentLength(payload.size())
             .build();
          blobStore.putBlob(containerName, blob);
-
          // Use Provider API
          if (context.getBackendType().getRawType().equals(RestContext.class)) {
             RestContext<?, ?> rest = context.unwrap();
             Object object = null;
-            if (rest.getApi() instanceof S3Client) {
-               RestContext<S3Client, S3AsyncClient> providerContext = context.unwrap();
-               object = providerContext.getApi().headObject(containerName, blobName);
-            } else if (rest.getApi() instanceof SwiftClient) {
+            if (rest.getApi() instanceof SwiftClient) {
                RestContext<SwiftClient, SwiftAsyncClient> providerContext = context.unwrap();
                object = providerContext.getApi().getObjectInfo(containerName, blobName);
-            } else if (rest.getApi() instanceof AzureBlobClient) {
-               RestContext<AzureBlobClient, AzureBlobAsyncClient> providerContext = context.unwrap();
-               object = providerContext.getApi().getBlobProperties(containerName, blobName);
-            } else if (rest.getApi() instanceof AtmosClient) {
-               RestContext<AtmosClient, AtmosAsyncClient> providerContext = context.unwrap();
-               object = providerContext.getApi().headFile(containerName + "/" + blobName);
-            }
-            if (object != null) {
-               System.out.println(object);
+               if (object != null) {
+                  System.out.println(object);
+               }
             }
          }
-         
       } finally {
+          blobStore.deleteContainer(containerName);
          // Close connecton
          context.close();
          System.exit(0);
