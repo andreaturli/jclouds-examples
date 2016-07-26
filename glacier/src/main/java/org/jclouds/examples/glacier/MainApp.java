@@ -67,7 +67,7 @@ public class MainApp {
             .buildView(BlobStoreContext.class);
 
       try {
-         while (chooseOption(context));
+         while (chooseOption(context)) {}
       } finally {
          context.close();
       }
@@ -203,7 +203,7 @@ public class MainApp {
       System.out.println("4. Provider API (~4-5 hours)");
       System.out.println("5. Exit");
       System.out.print("Choose an option: ");
-      try{
+      try {
          switch(scan.nextInt()){
          case 1:
             putAndRetrieveBlobExample(context.getBlobStore());
@@ -224,7 +224,7 @@ public class MainApp {
             break;
          }
       }
-      catch(InputMismatchException e) {
+      catch (InputMismatchException e) {
          System.out.println("Not a valid option");
       }
       return true;

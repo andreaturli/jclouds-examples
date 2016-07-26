@@ -1,20 +1,18 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package org.jclouds.examples.compute.basics;
@@ -25,8 +23,6 @@ import static com.google.common.base.Predicates.not;
 import static com.google.common.collect.Iterables.concat;
 import static com.google.common.collect.Iterables.contains;
 import static com.google.common.collect.Iterables.getOnlyElement;
-import static org.jclouds.aws.ec2.reference.AWSEC2Constants.PROPERTY_EC2_AMI_QUERY;
-import static org.jclouds.aws.ec2.reference.AWSEC2Constants.PROPERTY_EC2_CC_AMI_QUERY;
 import static org.jclouds.compute.config.ComputeServiceProperties.TIMEOUT_SCRIPT_COMPLETE;
 import static org.jclouds.compute.options.TemplateOptions.Builder.overrideLoginCredentials;
 import static org.jclouds.compute.options.TemplateOptions.Builder.runScript;
@@ -35,13 +31,13 @@ import static org.jclouds.compute.predicates.NodePredicates.inGroup;
 import static org.jclouds.scriptbuilder.domain.Statements.exec;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import org.jclouds.Constants;
 import org.jclouds.ContextBuilder;
 import org.jclouds.apis.ApiMetadata;
 import org.jclouds.apis.Apis;
@@ -51,14 +47,14 @@ import org.jclouds.compute.RunNodesException;
 import org.jclouds.compute.RunScriptOnNodesException;
 import org.jclouds.compute.domain.ComputeMetadata;
 import org.jclouds.compute.domain.ExecResponse;
+import org.jclouds.compute.domain.Hardware;
 import org.jclouds.compute.domain.Image;
 import org.jclouds.compute.domain.NodeMetadata;
-import org.jclouds.compute.domain.Template;
+import org.jclouds.compute.domain.OsFamily;
 import org.jclouds.compute.domain.TemplateBuilder;
-import org.jclouds.domain.Credentials;
+import org.jclouds.compute.predicates.NodePredicates;
 import org.jclouds.domain.LoginCredentials;
 import org.jclouds.enterprise.config.EnterpriseConfigurationModule;
-import org.jclouds.googlecloud.GoogleCredentialsFromJson;
 import org.jclouds.logging.slf4j.config.SLF4JLoggingModule;
 import org.jclouds.providers.ProviderMetadata;
 import org.jclouds.providers.Providers;
@@ -68,7 +64,6 @@ import org.jclouds.sshj.config.SshjSshClientModule;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Predicates;
-import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
@@ -86,8 +81,8 @@ import com.google.inject.Module;
  */
 public class MainApp {
 
-   public static enum Action {
-      ADD, RUN, EXEC, DESTROY, LISTIMAGES, LISTNODES;
+   public enum Action {
+      ADD, RUN, EXEC, DESTROY, LISTIMAGES, LISTNODES, LISTHARDWAREPROFILES;
    }
 
    public static final Map<String, ApiMetadata> allApis = Maps.uniqueIndex(Apis.viewableAs(ComputeServiceContext.class),
@@ -118,10 +113,6 @@ public class MainApp {
          throw new IllegalArgumentException("please quote the command to exec as the last parameter");
       String command = (action == Action.EXEC) ? args[5] : "echo hello";
 
-      // For GCE, the credential parameter is the path to the private key file
-      if (providerIsGCE)
-         credential = getCredentialFromJsonKeyFile(credential);
-
       if (action == Action.RUN && args.length < PARAMETERS + 1)
          throw new IllegalArgumentException("please pass the local file to run as the last parameter");
       File file = null;
@@ -149,6 +140,8 @@ public class MainApp {
             // that tested to work with java, which tends to be Ubuntu or CentOS
             TemplateBuilder templateBuilder = compute.templateBuilder();
 
+            templateBuilder.locationId("northeurope").osFamily(OsFamily.UBUNTU).osVersionMatches("14.04.3-LTS");
+
             // If you want to up the ram and leave everything default, you can
             // just tweak minRam
             if (minRam != null)
@@ -162,12 +155,13 @@ public class MainApp {
             // to run commands as root, we use the runScript option in the template.
             templateBuilder.options(runScript(bootInstructions));
 
-            Template template = templateBuilder.build();
-
-            NodeMetadata node = getOnlyElement(compute.createNodesInGroup(groupName, 1, template));
+            NodeMetadata node = getOnlyElement(compute.createNodesInGroup(groupName, 1, templateBuilder.build()));
             System.out.printf("<< node %s: %s%n", node.getId(),
                   concat(node.getPrivateAddresses(), node.getPublicAddresses()));
 
+            Map<? extends NodeMetadata, ExecResponse> responses1 = compute.runScriptOnNodesMatching(//
+                    inGroup(groupName), // predicate used to select nodes
+                    exec(command));
          case EXEC:
             System.out.printf(">> running [%s] on group %s as %s%n", command, groupName, login.identity);
 
@@ -177,10 +171,9 @@ public class MainApp {
             Map<? extends NodeMetadata, ExecResponse> responses = compute.runScriptOnNodesMatching(//
                   inGroup(groupName), // predicate used to select nodes
                   exec(command), // what you actually intend to run
-                  overrideLoginCredentials(login) // use my local user &
-                                                 // ssh key
+                  overrideLoginCredentials(login) // use my local user & ssh key
                         .runAsRoot(false) // don't attempt to run as root (sudo)
-                        .wrapInInitScript(false));// run command directly
+                        .wrapInInitScript(false)); // run command directly
 
             for (Entry<? extends NodeMetadata, ExecResponse> response : responses.entrySet()) {
                System.out.printf("<< node %s: %s%n", response.getKey().getId(),
@@ -221,8 +214,15 @@ public class MainApp {
                System.out.println(">>>>  " + img);
             }
             break;
+         case LISTHARDWAREPROFILES:
+               Set<? extends Hardware> hardwareProfiles = compute.listHardwareProfiles();
+               System.out.printf(">> No of hardwareProfiles %d%n", hardwareProfiles.size());
+               for (Hardware hardware : hardwareProfiles) {
+                  System.out.println(">>>>  " + hardware);
+               }
+               break;
          case LISTNODES:
-            Set<? extends ComputeMetadata> nodes = compute.listNodes();
+            Set<? extends ComputeMetadata> nodes = compute.listNodesDetailsMatching(NodePredicates.locationId("eu-west-1"));
             System.out.printf(">> No of nodes/instances %d%n", nodes.size());
             for (ComputeMetadata nodeData : nodes) {
                System.out.println(">>>>  " + nodeData);
@@ -244,20 +244,6 @@ public class MainApp {
       }
    }
 
-   private static String getCredentialFromJsonKeyFile(String filename) {
-      try {
-         String fileContents = Files.toString(new File(filename), UTF_8);
-         Supplier<Credentials> credentialSupplier = new GoogleCredentialsFromJson(fileContents);
-         String credential = credentialSupplier.get().credential;
-         return credential;
-      } catch (IOException e) {
-         System.err.println("Exception reading private key from '%s': " + filename);
-         e.printStackTrace();
-         System.exit(1);
-         return null;
-      }
-   }
-
    static int error = 0;
 
    private static ComputeService initComputeService(String provider, String identity, String credential) {
@@ -265,8 +251,8 @@ public class MainApp {
       // example of specific properties, in this case optimizing image list to
       // only amazon supplied
       Properties properties = new Properties();
-      properties.setProperty(PROPERTY_EC2_AMI_QUERY, "owner-id=137112412989;state=available;image-type=machine");
-      properties.setProperty(PROPERTY_EC2_CC_AMI_QUERY, "");
+      //properties.setProperty(PROPERTY_EC2_AMI_QUERY, "owner-id=137112412989;state=available;image-type=machine");
+      //properties.setProperty(PROPERTY_EC2_CC_AMI_QUERY, "");
       long scriptTimeout = TimeUnit.MILLISECONDS.convert(20, TimeUnit.MINUTES);
       properties.setProperty(TIMEOUT_SCRIPT_COMPLETE, scriptTimeout + "");
 
@@ -275,6 +261,9 @@ public class MainApp {
       if (oAuthEndpoint != null) {
          properties.setProperty(PROPERTY_OAUTH_ENDPOINT, oAuthEndpoint);
       }
+      properties.setProperty(Constants.PROPERTY_TRUST_ALL_CERTS, "true");
+      properties.setProperty(Constants.PROPERTY_RELAX_HOSTNAME, "true");
+      properties.setProperty(Constants.LOGGER_HTTP_WIRE, "true");
 
       // example of injecting a ssh implementation
       Iterable<Module> modules = ImmutableSet.<Module> of(

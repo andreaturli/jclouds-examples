@@ -18,6 +18,10 @@
  */
 package org.jclouds.examples.rackspace.clouddatabases;
 
+import static org.jclouds.examples.rackspace.clouddatabases.Constants.NAME;
+import static org.jclouds.examples.rackspace.clouddatabases.Constants.PROVIDER;
+import static org.jclouds.examples.rackspace.clouddatabases.Constants.REGION;
+
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
@@ -29,8 +33,6 @@ import org.jclouds.openstack.trove.v1.features.DatabaseApi;
 import org.jclouds.openstack.trove.v1.features.InstanceApi;
 
 import com.google.common.io.Closeables;
-
-import static org.jclouds.examples.rackspace.clouddatabases.Constants.*;
 
 /**
  * This example creates a MySQL database on a Cloud Databases instance.
@@ -87,10 +89,7 @@ public class CreateDatabase implements Closeable {
 
    private void createDatabase() throws TimeoutException {
       System.out.format("Create Database%n");
-
-      boolean result = databaseApi.create(NAME);
-
-      System.out.format("  %s%n", result);
+      databaseApi.create(NAME);
    }
 
    /**

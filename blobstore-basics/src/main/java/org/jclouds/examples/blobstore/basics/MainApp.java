@@ -18,6 +18,7 @@ package org.jclouds.examples.blobstore.basics;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.collect.Iterables.contains;
+
 import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
@@ -36,8 +37,8 @@ import org.jclouds.blobstore.domain.StorageMetadata;
 import org.jclouds.domain.Location;
 import org.jclouds.googlecloudstorage.GoogleCloudStorageApi;
 import org.jclouds.googlecloudstorage.GoogleCloudStorageApiMetadata;
-import org.jclouds.openstack.swift.SwiftApiMetadata;
 import org.jclouds.openstack.swift.v1.SwiftApi;
+import org.jclouds.openstack.swift.v1.SwiftApiMetadata;
 import org.jclouds.providers.ProviderMetadata;
 import org.jclouds.providers.Providers;
 import org.jclouds.s3.S3ApiMetadata;
@@ -51,19 +52,19 @@ import com.google.common.io.ByteSource;
 
 /**
  * Demonstrates the use of {@link BlobStore}.
- * 
+ *
  * Usage is: java MainApp \"provider\" \"identity\" \"credential\" \"containerName\"
  */
 public class MainApp {
-   
+
    public static final Map<String, ApiMetadata> allApis = Maps.uniqueIndex(Apis.viewableAs(BlobStoreContext.class),
         Apis.idFunction());
-   
+
    public static final Map<String, ProviderMetadata> appProviders = Maps.uniqueIndex(Providers.viewableAs(BlobStoreContext.class),
         Providers.idFunction());
-   
+
    public static final Set<String> allKeys = ImmutableSet.copyOf(Iterables.concat(appProviders.keySet(), allApis.keySet()));
-   
+
    public static int PARAMETERS = 4;
    public static String INVALID_SYNTAX = "Invalid number of parameters. Syntax is: \"provider\" \"identity\" \"credential\" \"containerName\" ";
 
@@ -136,7 +137,7 @@ public class MainApp {
          if (object != null) {
             System.out.println(object);
          }
-         
+
       } finally {
          // Close connecton
          context.close();

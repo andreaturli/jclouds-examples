@@ -18,6 +18,11 @@
  */
 package org.jclouds.examples.rackspace.clouddatabases;
 
+import static org.jclouds.examples.rackspace.clouddatabases.Constants.NAME;
+import static org.jclouds.examples.rackspace.clouddatabases.Constants.PASSWORD;
+import static org.jclouds.examples.rackspace.clouddatabases.Constants.PROVIDER;
+import static org.jclouds.examples.rackspace.clouddatabases.Constants.REGION;
+
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
@@ -29,8 +34,6 @@ import org.jclouds.openstack.trove.v1.features.InstanceApi;
 import org.jclouds.openstack.trove.v1.features.UserApi;
 
 import com.google.common.io.Closeables;
-
-import static org.jclouds.examples.rackspace.clouddatabases.Constants.*;
 
 /**
  * This example will create a User on the database created in the CreateDatabase example.
@@ -85,10 +88,7 @@ public class CreateUser implements Closeable {
 
    private void createUser() throws TimeoutException {
       System.out.format("Create User%n");
-
-      boolean result = userApi.create(NAME, PASSWORD, NAME);
-
-      System.out.format("  %s%n", result);
+      userApi.create(NAME, PASSWORD, NAME);
    }
 
    /**

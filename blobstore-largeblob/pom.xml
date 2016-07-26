@@ -20,49 +20,50 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.apache.jclouds.examples</groupId>
+    <artifactId>jclouds-examples</artifactId>
+    <version>2.0.0-SNAPSHOT</version>
+  </parent>
   <groupId>org.apache.jclouds.examples</groupId>
   <artifactId>blobstore-largeblob</artifactId>
-  <version>1.8.0</version>
+
   <name>blobstore-largeblob</name>
   <description>jclouds blobstore example that creates a container, then uploads a large file using parallel multipart upload</description>
-
-  <properties>
-    <jclouds.version>1.9.0</jclouds.version>
-  </properties>
 
   <dependencies>
     <dependency>
       <groupId>org.apache.jclouds</groupId>
       <artifactId>jclouds-blobstore</artifactId>
-      <version>${jclouds.version}</version>
+      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.jclouds</groupId>
       <artifactId>jclouds-allblobstore</artifactId>
-      <version>${jclouds.version}</version>
+      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.jclouds.driver</groupId>
       <artifactId>jclouds-netty</artifactId>
-      <version>${jclouds.version}</version>
+      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.jclouds.driver</groupId>
       <artifactId>jclouds-apachehc</artifactId>
-      <version>${jclouds.version}</version>
+      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.jclouds.driver</groupId>
       <artifactId>jclouds-log4j</artifactId>
-      <version>${jclouds.version}</version>
+      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.jclouds.driver</groupId>
       <artifactId>jclouds-slf4j</artifactId>
-      <version>${jclouds.version}</version>
+      <version>${project.parent.version}</version>
     </dependency>
     <!-- note that if you want a smaller distribution
-        remove the above dependency and place something 
+        remove the above dependency and place something
         like below -->
     <!--
     <dependency>

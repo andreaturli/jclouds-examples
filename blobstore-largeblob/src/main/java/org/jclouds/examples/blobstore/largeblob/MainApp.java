@@ -47,10 +47,10 @@ import com.google.inject.Module;
 
 /**
  * Demonstrates the use of {@link BlobStore}.
- * 
+ *
  * Usage is: java MainApp \"provider\" \"identity\" \"credential\" \"localFileName\"
  * \"containerName\" \"objectName\" plainhttp threadcount
- * 
+ *
  * \"plainhttp\" and \"threadcound\" is optional if all the rest of parameters are omitted
  */
 public class MainApp {
@@ -58,7 +58,7 @@ public class MainApp {
    public static int PARAMETERS = 6;
    public static String INVALID_SYNTAX = "Invalid number of parameters. Syntax is: \"provider\" \"identity\" \"credential\" \"localFileName\" \"containerName\" \"objectName\" plainhttp threadcount";
 
-   public final static Properties PLAIN_HTTP_ENDPOINTS = new Properties();
+   public static final Properties PLAIN_HTTP_ENDPOINTS = new Properties();
 
    static {
       PLAIN_HTTP_ENDPOINTS.setProperty(PROPERTY_ENDPOINT, "http://s3.amazonaws.com");
@@ -72,7 +72,7 @@ public class MainApp {
                "http://s3-ap-southeast-1.amazonaws.com");
    }
 
-   final static Iterable<? extends Module> MODULES = 
+   static final Iterable<? extends Module> MODULES =
       ImmutableSet.of(new JavaUrlHttpCommandExecutorServiceModule(), new Log4JLoggingModule(), new NettyPayloadModule());
 
    // we may test different http layer with the following
@@ -118,7 +118,7 @@ public class MainApp {
       ProviderMetadata provider = null;
       try {
          provider = Providers.withId(providerId);
-      } catch(NoSuchElementException exception) {
+      } catch (NoSuchElementException exception) {
          throw new IllegalArgumentException("provider " + providerId + " not in supported list: " + transform(Providers.all(), Providers.idFunction()));
       }
       String identity = args[1];
@@ -156,7 +156,7 @@ public class MainApp {
          String eTag = blobStore.putBlob(containerName, blob, multipart());
 
          printSpeed("Sucessfully uploaded eTag(" + eTag + ")", start, length);
-      } catch(HttpResponseException exception) {
+      } catch (HttpResponseException exception) {
          System.err.println(exception.getMessage());
          exception.printStackTrace();
       } finally {

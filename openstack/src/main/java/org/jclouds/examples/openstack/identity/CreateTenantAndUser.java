@@ -16,10 +16,9 @@
  */
 package org.jclouds.examples.openstack.identity;
 
-import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.io.Closeables;
-import com.google.inject.Module;
+import java.io.Closeable;
+import java.io.IOException;
+
 import org.jclouds.ContextBuilder;
 import org.jclouds.logging.slf4j.config.SLF4JLoggingModule;
 import org.jclouds.openstack.keystone.v2_0.KeystoneApi;
@@ -30,8 +29,10 @@ import org.jclouds.openstack.keystone.v2_0.extensions.UserAdminApi;
 import org.jclouds.openstack.keystone.v2_0.options.CreateTenantOptions;
 import org.jclouds.openstack.keystone.v2_0.options.CreateUserOptions;
 
-import java.io.Closeable;
-import java.io.IOException;
+import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.io.Closeables;
+import com.google.inject.Module;
 
 public class CreateTenantAndUser implements Closeable {
    private final KeystoneApi keystoneApi;

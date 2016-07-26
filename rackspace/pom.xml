@@ -20,26 +20,26 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.apache.jclouds</groupId>
+    <artifactId>jclouds-project</artifactId>
+    <version>2.0.0-SNAPSHOT</version>
+  </parent>
   <groupId>org.apache.jclouds.examples</groupId>
   <artifactId>rackspace-examples</artifactId>
-  <version>1.9.1</version>
   <name>rackspace-examples</name>
-
-  <properties>
-    <jclouds.version>1.9.1</jclouds.version>
-  </properties>
 
   <dependencies>
     <!-- jclouds dependencies -->
     <dependency>
       <groupId>org.apache.jclouds.driver</groupId>
       <artifactId>jclouds-slf4j</artifactId>
-      <version>${jclouds.version}</version>
+      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.jclouds.driver</groupId>
       <artifactId>jclouds-sshj</artifactId>
-      <version>${jclouds.version}</version>
+      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
        <groupId>org.apache.jclouds.labs</groupId>
@@ -51,98 +51,98 @@
     <dependency>
       <groupId>org.apache.jclouds.provider</groupId>
       <artifactId>rackspace-cloudservers-us</artifactId>
-      <version>${jclouds.version}</version>
+      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.jclouds.provider</groupId>
       <artifactId>rackspace-cloudfiles-us</artifactId>
-      <version>${jclouds.version}</version>
+        <version>${project.parent.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.jclouds.provider</groupId>
       <artifactId>rackspace-cloudblockstorage-us</artifactId>
-      <version>${jclouds.version}</version>
+      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.jclouds.provider</groupId>
       <artifactId>rackspace-clouddatabases-us</artifactId>
-      <version>${jclouds.version}</version>
+      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.jclouds.labs</groupId>
       <artifactId>rackspace-cloudqueues-us</artifactId>
-      <version>${jclouds.version}</version>
+      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.jclouds.provider</groupId>
       <artifactId>rackspace-cloudloadbalancers-us</artifactId>
-      <version>${jclouds.version}</version>
+      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.jclouds.provider</groupId>
       <artifactId>rackspace-clouddns-us</artifactId>
-      <version>${jclouds.version}</version>
+      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.jclouds.labs</groupId>
       <artifactId>rackspace-cdn-us</artifactId>
-      <version>${jclouds.version}</version>
+      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.jclouds.labs</groupId>
       <artifactId>rackspace-cloudnetworks-us</artifactId>
-      <version>${jclouds.version}</version>
+      <version>${project.parent.version}</version>
     </dependency>
     <!-- Rackspace UK dependencies -->
     <dependency>
       <groupId>org.apache.jclouds.provider</groupId>
       <artifactId>rackspace-cloudservers-uk</artifactId>
-      <version>${jclouds.version}</version>
+      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.jclouds.provider</groupId>
       <artifactId>rackspace-cloudfiles-uk</artifactId>
-      <version>${jclouds.version}</version>
+      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.jclouds.provider</groupId>
       <artifactId>rackspace-cloudblockstorage-uk</artifactId>
-      <version>${jclouds.version}</version>
+      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.jclouds.provider</groupId>
       <artifactId>rackspace-clouddatabases-uk</artifactId>
-      <version>${jclouds.version}</version>
+      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.jclouds.labs</groupId>
       <artifactId>rackspace-cloudqueues-uk</artifactId>
-      <version>${jclouds.version}</version>
+      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.jclouds.labs</groupId>
       <artifactId>rackspace-autoscale-us</artifactId>
-      <version>${jclouds.version}</version>
+      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.jclouds.provider</groupId>
       <artifactId>rackspace-cloudloadbalancers-uk</artifactId>
-      <version>${jclouds.version}</version>
+      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.jclouds.provider</groupId>
       <artifactId>rackspace-clouddns-uk</artifactId>
-      <version>${jclouds.version}</version>
+      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.jclouds.labs</groupId>
       <artifactId>rackspace-cdn-uk</artifactId>
-      <version>${jclouds.version}</version>
+      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.jclouds.labs</groupId>
       <artifactId>rackspace-cloudnetworks-uk</artifactId>
-      <version>${jclouds.version}</version>
+        <version>${project.parent.version}</version>
     </dependency>
     <!-- 3rd party dependencies -->
     <dependency>
@@ -173,6 +173,25 @@
           <target>1.6</target>
         </configuration>
       </plugin>
+      <plugin>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.jclouds</groupId>
+            <artifactId>jclouds-resources</artifactId>
+            <version>${project.parent.version}</version>
+          </dependency>
+        </dependencies>
+        <configuration>
+          <!-- jclouds-resources has the checkstyle config in the classpath -->
+          <configLocation>resources/checkstyle.xml</configLocation>
+          <includeTestSourceDirectory>true</includeTestSourceDirectory>
+          <failOnViolation>false</failOnViolation>
+          <failsOnError>true</failsOnError>
+          <violationSeverity>warning</violationSeverity>
+        </configuration>
+      </plugin>
+
     </plugins>
   </build>
 </project>

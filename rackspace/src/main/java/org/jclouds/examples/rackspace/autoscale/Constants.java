@@ -25,10 +25,10 @@ public interface Constants {
    // The provider configures jclouds to use the Rackspace Cloud (US).
    // To use the Rackspace Cloud (UK) set the system property or default value to "rackspace-autoscale-uk".
    // Note that autoscale is not yet supported for the UK.
-   public static final String PROVIDER = System.getProperty("provider.autoscale", "rackspace-autoscale-us");
-   public static final String REGION = System.getProperty("region", "DFW");
+   static final String PROVIDER = System.getProperty("provider.autoscale", "rackspace-autoscale-us");
+   static final String REGION = System.getProperty("region", "DFW");
 
-   public static final String NAME = "jclouds-example";
-   public static final String SERVICE_NET = "11111111-1111-1111-1111-111111111111";
-   public static final String PUBLIC_NET = "00000000-0000-0000-0000-000000000000";
+   static final String NAME = "jclouds-example";
+   static final String SERVICE_NET = "11111111-1111-1111-1111-111111111111";
+   static final String PUBLIC_NET = "00000000-0000-0000-0000-000000000000";
 }

@@ -28,9 +28,9 @@
   </root>
   <logger name="jclouds.compute" level="debug"/>
   <logger name="net.schmizz" level="warn"/>
-<!--
+
   <logger name="jclouds.wire" level="debug"/>
   <logger name="jclouds.headers" level="debug"/>
   <logger name="jclouds.ssh" level="debug"/>
--->
+
 </configuration>
