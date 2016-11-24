@@ -18,8 +18,10 @@ package org.jclouds.examples.blobstore.basics;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.collect.Iterables.contains;
+
 import java.io.IOException;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 import org.jclouds.ContextBuilder;
@@ -36,8 +38,8 @@ import org.jclouds.blobstore.domain.StorageMetadata;
 import org.jclouds.domain.Location;
 import org.jclouds.googlecloudstorage.GoogleCloudStorageApi;
 import org.jclouds.googlecloudstorage.GoogleCloudStorageApiMetadata;
-import org.jclouds.openstack.swift.SwiftApiMetadata;
 import org.jclouds.openstack.swift.v1.SwiftApi;
+import org.jclouds.openstack.swift.v1.SwiftApiMetadata;
 import org.jclouds.providers.ProviderMetadata;
 import org.jclouds.providers.Providers;
 import org.jclouds.s3.S3ApiMetadata;
@@ -64,7 +66,7 @@ public class MainApp {
    
    public static final Set<String> allKeys = ImmutableSet.copyOf(Iterables.concat(appProviders.keySet(), allApis.keySet()));
    
-   public static int PARAMETERS = 4;
+   public static int PARAMETERS = 5;
    public static String INVALID_SYNTAX = "Invalid number of parameters. Syntax is: \"provider\" \"identity\" \"credential\" \"containerName\" ";
 
    public static void main(String[] args) throws IOException {
@@ -82,22 +84,27 @@ public class MainApp {
       String identity = args[1];
       String credential = args[2];
       String containerName = args[3];
+      String endpoint = args[4];
 
       // Init
+      Properties properties = new Properties();
+      properties.setProperty("jclouds.keystone.credential-type", "tempAuthCredentials");
       BlobStoreContext context = ContextBuilder.newBuilder(provider)
-                                               .credentials(identity, credential)
-                                               .buildView(BlobStoreContext.class);
+              .credentials(identity, credential)
+              .endpoint(endpoint)
+              .overrides(properties)
+              .buildView(BlobStoreContext.class);
 
+      BlobStore blobStore = null;
       try {
-
          ApiMetadata apiMetadata = context.unwrap().getProviderMetadata().getApiMetadata();
+         blobStore = context.getBlobStore();
          // Create Container
-         BlobStore blobStore = context.getBlobStore();
          Location location = null;
          if (apiMetadata instanceof SwiftApiMetadata) {
             location = Iterables.getFirst(blobStore.listAssignableLocations(), null);
          }
-         blobStore.createContainerInLocation(location, containerName);
+         blobStore.createContainerInLocation(null, containerName);
          String blobName = "test";
          ByteSource payload = ByteSource.wrap("testdata".getBytes(Charsets.UTF_8));
 
@@ -138,6 +145,7 @@ public class MainApp {
          }
          
       } finally {
+         blobStore.deleteContainer(containerName);
          // Close connecton
          context.close();
       }
